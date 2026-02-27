@@ -6,6 +6,7 @@ const { exec } = require('child_process');
 const crypto = require('crypto');
 
 const PORT = parseInt(process.env.DASHBOARD_PORT || '7000');
+const HOST = process.env.DASHBOARD_HOST || '127.0.0.1';
 const OPENCLAW_DIR = process.env.OPENCLAW_DIR || path.join(os.homedir(), '.openclaw');
 const WORKSPACE_DIR = process.env.WORKSPACE_DIR || process.env.OPENCLAW_WORKSPACE || process.cwd();
 const AGENT_ID = process.env.OPENCLAW_AGENT || 'main';
@@ -138,10 +139,9 @@ console.log('══════════════════════�
 console.log('  🔐 Recovery Token');
 console.log('═══════════════════════════════════════════════════════════');
 console.log('');
-console.log('  ' + DASHBOARD_TOKEN);
-console.log('');
-console.log('  Use this token to reset your password if forgotten.');
-console.log('  Set DASHBOARD_TOKEN env variable for a custom token.');
+console.log('  Recovery token is configured and available for password reset.');
+console.log('  Token value is hidden from logs for security.');
+console.log('  Set DASHBOARD_TOKEN env variable to use your own token value.');
 console.log('═══════════════════════════════════════════════════════════');
 console.log('');
 
@@ -365,11 +365,35 @@ function httpsEnforcement(req, res) {
 }
 
 function isAuthenticated(req) {
+  const authHeader = req.headers.authorization || '';
+  if (!authHeader.startsWith('Bearer ')) return false;
+  const token = authHeader.substring(7).trim();
+  if (!token) return false;
+
+  const sess = sessions.get(token);
+  if (!sess) return false;
+
+  const now = Date.now();
+  if (now > sess.expiresAt) {
+    sessions.delete(token);
+    return false;
+  }
+
+  const ip = getClientIP(req);
+  if (sess.ip && ip && sess.ip !== ip) return false;
+
+  sess.lastActivity = now;
+  sess.expiresAt = now + (sess.rememberMe ? SESSION_REMEMBER_LIFETIME : SESSION_ACTIVITY_TIMEOUT);
+  sessions.set(token, sess);
   return true;
 }
 
 function requireAuth(req, res) {
-  return true;
+  if (isAuthenticated(req)) return true;
+  setSameSiteCORS(req, res);
+  res.writeHead(401, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({ error: 'Unauthorized' }));
+  return false;
 }
 
 function getGitRepos() {
@@ -1438,8 +1462,9 @@ const server = http.createServer((req, res) => {
 
   if (req.url === '/api/auth/status') {
     setSameSiteCORS(req, res);
+    const creds = getCredentials();
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ registered: true, loggedIn: true }));
+    res.end(JSON.stringify({ registered: !!creds, loggedIn: isAuthenticated(req) }));
     return;
   }
 
@@ -2400,6 +2425,6 @@ const server = http.createServer((req, res) => {
   }
 });
 
-server.listen(PORT, '0.0.0.0', () => {
-  console.log('Dashboard: http://0.0.0.0:' + PORT);
+server.listen(PORT, HOST, () => {
+  console.log('Dashboard: http://' + HOST + ':' + PORT);
 });
