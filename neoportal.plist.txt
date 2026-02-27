@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.kean.neoportal</string>
+    <key>UserName</key>
+    <string>neo</string>
+    <key>WorkingDirectory</key>
+    <string>/Users/neo/Code/neo-portal</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/opt/homebrew/bin/node</string>
+        <string>server.js</string>
+    </array>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>DASHBOARD_PORT</key>
+        <string>7080</string>
+        <key>WORKSPACE_DIR</key>
+        <string>/Users/neo/.openclaw/workspace</string>
+        <key>OPENCLAW_DIR</key>
+        <string>/Users/neo/.openclaw</string>
+        <key>OPENCLAW_AGENT</key>
+        <string>secretary</string>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+    </dict>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/Users/neo/Code/neo-portal/logs/out.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/neo/Code/neo-portal/logs/err.log</string>
+</dict>
+</plist>

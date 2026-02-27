@@ -1454,9 +1454,16 @@
     <main class="main">
 
       <div class="page active" id="overview">
-        <div class="page-header">
-          <h1 class="page-title">Overview</h1>
-          <p class="page-subtitle">Agent activity and system performance</p>
+        <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-end;">
+          <div>
+            <h1 class="page-title">Overview</h1>
+            <p class="page-subtitle">Agent activity and system performance</p>
+          </div>
+          <div>
+            <select id="agentSelect" onchange="changeAgent()" style="background: var(--surface-2); color: var(--text-primary); border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; font-family: 'Geist Mono', monospace; font-size: 13px; cursor: pointer; outline: none; margin-bottom: 8px;">
+              <option value="all">Overview (All Agents)</option>
+            </select>
+          </div>
         </div>
 
         <div class="grid mb-24" style="grid-template-columns: repeat(3, 1fr);">
@@ -2759,7 +2766,7 @@
     function showApp() {
       document.getElementById('loginPage').style.display = 'none';
       document.getElementById('mainApp').style.display = 'flex';
-      fetchData();
+      loadAgents().then(() => fetchData());
       fetchNewData();
       fetchHealthHistory();
       fetchMemoryFiles();
