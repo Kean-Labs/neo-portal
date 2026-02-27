@@ -1,0 +1,12 @@
+{
+  "name": "openclaw-monitor-portal",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local multi-agent monitoring portal for OpenClaw workloads",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "collector": "node collector/openclaw-log-forwarder.js"
+  }
+}

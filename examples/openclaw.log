@@ -1,0 +1,3 @@
+{"ts":"2026-02-27T10:00:00Z","type":"job_started","agentId":"planner-1","model":"gpt-4.1","status":"busy","jobId":"job-2001","sessionId":"sess-9901","usage":{"inputTokens":200,"outputTokens":50,"cachedTokens":10}}
+{"ts":"2026-02-27T10:00:15Z","type":"heartbeat","agentId":"coder-2","model":"gpt-4.1-mini","status":"busy","jobId":"job-2001","sessionId":"sess-9901","usage":{"inputTokens":150,"outputTokens":80,"cachedTokens":20}}
+ts=2026-02-27T10:01:00Z type=job_completed agentId=planner-1 model=gpt-4.1 status=idle jobId=job-2001 sessionId=sess-9901 inputTokens=80 outputTokens=22 cachedTokens=0
